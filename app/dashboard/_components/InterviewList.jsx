@@ -9,9 +9,11 @@ import InterviewItemCard from "./InterviewItemCard"
 const InterviewList = () => {
   const { user } = useUser();
   const [InterviewList, setInterviewList] = useState([]);
+  
   useEffect(() => {
     user && GetInterviewList();
   }, [user]);
+  
   const GetInterviewList = async () => {
     const result = await db
       .select()
@@ -27,12 +29,21 @@ const InterviewList = () => {
     );
     setInterviewList(result)
   };
+
+  const handleDeleteInterview = (mockId) => {
+    setInterviewList(prev => prev.filter(interview => interview.mockId !== mockId));
+  };
+  
   return (
     <div>
       <h2 className="font-medium text-xl">Previous Mock Interview</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 my-3">
-        {InterviewList&&InterviewList.map((interview,index)=>(
-            <InterviewItemCard interview={interview} key={index}/>
+        {InterviewList && InterviewList.map((interview, index) => (
+          <InterviewItemCard 
+            interview={interview} 
+            key={index}
+            onDelete={handleDeleteInterview}
+          />
         ))}
       </div>
     </div>
